@@ -23,6 +23,10 @@ install: build
 test:
 	@go test -v -cover ./...
 
+.PHONY: test-integration
+test-integration:
+	@docker run -i -v $(PWD):$(PWD) -w $(PWD)/tests terrable:latest ./run.sh
+
 .PHONY: clean
 clean:
 	@rm -rf build/
@@ -31,3 +35,7 @@ clean:
 mod:
 	@go mod tidy
 	@go mod vendor
+
+.PHONY: docker-build
+docker-build:
+	@docker build -t terrable .

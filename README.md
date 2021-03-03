@@ -27,15 +27,32 @@ with our specific use cases.
 
 ## Usage
 
-```hcl
+![Usage](img/demo.png?raw=true "Usage")
 
-## A "local" system provider to manage local resources
+```hcl
+# The "local" system provider to manage local resources
 provider "terrable" {}
 
 resource "terrable_user" "tomcat" {
-    name   = "tomcat_user"
-    groups = ["myapp"]
+    name  = "tomcat"
+    shell = "/bin/zsh"
 }
+```
+
+## Testing
+
+$ make build && make install && (cd examples; terraform init ; TF_LOG=DEBUG terraform apply -auto-approve) 2>&1 | grep Something
+
+Run unit tests
+
+```sh
+make test
+```
+
+Run integration tests
+
+```sh
+make docker-build test-integration
 ```
 
 ## Developing
@@ -67,4 +84,6 @@ After installing you will need to run `terraform init` in any project using the 
 
 ## License
 
-MIT
+The [MIT] License.
+
+[MIT]: LICENSE

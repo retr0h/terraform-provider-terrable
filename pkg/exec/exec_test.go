@@ -1,5 +1,5 @@
 // Copyright (c) 2021 John Dewey <john@dewey.ws>
-
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
@@ -18,18 +18,20 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-package main
+package exec
 
 import (
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/plugin"
-	"github.com/retr0h/terraform-provider-terrable/pkg/terrable"
+	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
-func main() {
-	plugin.Serve(&plugin.ServeOpts{
-		ProviderFunc: func() *schema.Provider {
-			return terrable.Provider()
-		},
-	})
+func TestRunReturnsError(t *testing.T) {
+	c := Commander{}
+	out, err := c.Run("cat", "foo")
+
+	assert.Error(t, err)
+
+	want := []byte("cat: foo: No such file or directory\n")
+	assert.Equal(t, out, want)
 }

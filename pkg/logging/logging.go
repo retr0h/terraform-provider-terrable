@@ -1,5 +1,5 @@
 // Copyright (c) 2021 John Dewey <john@dewey.ws>
-
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
@@ -18,18 +18,50 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-package main
+package logging
 
 import (
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/plugin"
-	"github.com/retr0h/terraform-provider-terrable/pkg/terrable"
+	"os"
+
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 )
 
-func main() {
-	plugin.Serve(&plugin.ServeOpts{
-		ProviderFunc: func() *schema.Provider {
-			return terrable.Provider()
-		},
-	})
+func init() {
+	zerolog.SetGlobalLevel(zerolog.DebugLevel)
+	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
+	// Pretty logging
+	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
+}
+
+// Debug starts a new message with debug level.
+func Debug() *zerolog.Event {
+	return log.Logger.Debug()
+}
+
+// Info starts a new message with info level.
+func Info() *zerolog.Event {
+	return log.Logger.Info()
+}
+
+// Warn starts a new message with warn level.
+func Warn() *zerolog.Event {
+	return log.Logger.Warn()
+}
+
+// Error starts a new message with error level.
+func Error() *zerolog.Event {
+	return log.Logger.Error()
+}
+
+// Fatal starts a new message with fatal level. The os.Exit(1) function
+// is called by the Msg method.
+func Fatal() *zerolog.Event {
+	return log.Logger.Fatal()
+}
+
+// Panic starts a new message with panic level. The message is also sent
+// to the panic function.
+func Panic() *zerolog.Event {
+	return log.Logger.Panic()
 }

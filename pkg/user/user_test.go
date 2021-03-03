@@ -1,5 +1,5 @@
 // Copyright (c) 2021 John Dewey <john@dewey.ws>
-
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
@@ -18,18 +18,60 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-package main
+package user
 
 import (
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/plugin"
-	"github.com/retr0h/terraform-provider-terrable/pkg/terrable"
+	"os/exec"
+	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
-func main() {
-	plugin.Serve(&plugin.ServeOpts{
-		ProviderFunc: func() *schema.Provider {
-			return terrable.Provider()
-		},
-	})
+func TestLocate(t *testing.T) {
+	userName := "root"
+	u, err := Lookup(userName)
+	assert.Equal(t, u.Username, "root")
+
+	assert.NoError(t, err)
+}
+
+func TestLocateErrorOnInvalidUser(t *testing.T) {
+	userName := "invalid"
+	_, err := Lookup(userName)
+
+	assert.Error(t, err)
+}
+
+type fakeCommander struct {
+	testCommand []string
+}
+
+func (c *fakeCommander) Run(name string, args ...string) ([]byte, error) {
+	cmd := exec.Command(name, args...)
+	c.testCommand = cmd.Args
+
+	return []byte(""), nil
+}
+
+func TestAdd(t *testing.T) {
+	fakeCommander := &fakeCommander{}
+	u := &User{
+		Name:      "fake-name",
+		Directory: "fake-dir",
+		Shell:     "fake-shell",
+		Commander: fakeCommander,
+	}
+	err := u.Add()
+
+	want := []string{
+		"useradd",
+		"-d", "fake-dir",
+		"-s", "fake-shell",
+		"-m",
+		"fake-name",
+	}
+	got := fakeCommander.testCommand
+
+	assert.Equal(t, got, want)
+	assert.NoError(t, err)
 }

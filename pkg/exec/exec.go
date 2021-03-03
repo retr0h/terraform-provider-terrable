@@ -1,5 +1,5 @@
 // Copyright (c) 2021 John Dewey <john@dewey.ws>
-
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
@@ -18,18 +18,32 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-package main
+package exec
 
 import (
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/plugin"
-	"github.com/retr0h/terraform-provider-terrable/pkg/terrable"
+	"os/exec"
+	"strings"
+
+	log "github.com/retr0h/terraform-provider-terrable/pkg/logging"
 )
 
-func main() {
-	plugin.Serve(&plugin.ServeOpts{
-		ProviderFunc: func() *schema.Provider {
-			return terrable.Provider()
-		},
-	})
+type Commander struct{}
+
+type CommanderDelegate interface {
+	Run(string, ...string) ([]byte, error)
+}
+
+func (c *Commander) Run(name string, args ...string) ([]byte, error) {
+	cmd := exec.Command(name, args...)
+	out, err := cmd.CombinedOutput()
+
+	if err != nil {
+		log.Error().
+			Err(err).
+			Str("command", strings.Join(cmd.Args, " ")).
+			Msg("Failed to execute")
+		return out, err
+	}
+
+	return out, nil
 }
