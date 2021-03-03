@@ -27,7 +27,16 @@ with our specific use cases.
 
 ## Usage
 
-TODO
+```hcl
+
+## A "local" system provider to manage local resources
+provider "terrable" {}
+
+resource "terrable_user" "tomcat" {
+    name   = "tomcat_user"
+    groups = ["myapp"]
+}
+```
 
 ## Developing
 
