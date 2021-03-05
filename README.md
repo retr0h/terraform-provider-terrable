@@ -1,3 +1,7 @@
+[![Go](https://github.com/retr0h/terraform-provider-terrable/actions/workflows/go.yml/badge.svg)](https://github.com/retr0h/terraform-provider-terrable/actions/workflows/go.yml)
+[![Docker Image CI](https://github.com/retr0h/terraform-provider-terrable/actions/workflows/docker-image.yml/badge.svg)](https://github.com/retr0h/terraform-provider-terrable/actions/workflows/docker-image.yml)
+[![Linter](https://github.com/retr0h/terraform-provider-terrable/actions/workflows/linter.yml/badge.svg)](https://github.com/retr0h/terraform-provider-terrable/actions/workflows/linter.yml)
+
 # Terrable
 
 Terrable ~ Terraform ~ Ansible

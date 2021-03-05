@@ -1,0 +1,19 @@
+---
+
+repo:
+  - ./*
+
+kind/terraform
+  - pkg/**/*.go
+  - **/*.hcl
+
+kind/test:
+  - **/*_test.go
+  - tests/*
+  - tests/*/**
+
+kind/hcl:
+  - **/*.hcl
+
+kind/yaml:
+  - **/*.yaml
