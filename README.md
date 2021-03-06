@@ -45,7 +45,7 @@ resource "terrable_user" "tomcat" {
 
 ## Testing
 
-$ make build && make install && (cd examples; terraform init ; TF_LOG=DEBUG terraform apply -auto-approve) 2>&1 | grep Something
+	$ make build && make install && (cd examples; terraform init ; TF_LOG=DEBUG terraform apply -auto-approve) 2>&1 | grep Something
 
 Run unit tests
 
@@ -56,7 +56,7 @@ make test
 Run integration tests
 
 ```sh
-make docker-build test-integration
+make build-docker test-integration
 ```
 
 ## Developing

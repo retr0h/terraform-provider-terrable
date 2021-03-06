@@ -11,13 +11,14 @@ TF_PLUGIN_PATH := $(HOME)/.terraform.d/plugins/$(HOSTNAME)/$(USER)/$(NAME)/$(VER
 default: build
 
 .PHONY: build
-build: mod
-	@go build -o build/$(GOOS)_$(GOARCH)/$(PLUGIN_NAME)_v$(VERSION)
+build:
+	@go build \
+		-o build/$(GOOS)_$(GOARCH)/$(PLUGIN_NAME)_v$(VERSION)
 
 .PHONY: install
 install: build
-	install -d $(TF_PLUGIN_PATH) && \
-	install build/$(GOOS)_$(GOARCH)/$(PLUGIN_NAME)_v$(VERSION) $(TF_PLUGIN_PATH)
+	@install -d $(TF_PLUGIN_PATH) \
+		&& install build/$(GOOS)_$(GOARCH)/$(PLUGIN_NAME)_v$(VERSION) $(TF_PLUGIN_PATH)
 
 .PHONY: test
 test:
@@ -25,7 +26,9 @@ test:
 
 .PHONY: test-integration
 test-integration:
-	@docker run -i -v $(PWD):$(PWD) -w $(PWD)/tests terrable:latest ./run.sh
+	@docker run -i \
+		-v $(PWD):$(PWD) \
+		-w $(PWD)/tests terrable:latest ./run.sh
 
 .PHONY: clean
 clean:
@@ -36,6 +39,6 @@ mod:
 	@go mod tidy
 	@go mod vendor
 
-.PHONY: docker-build
-docker-build:
+.PHONY: build-docker
+build-docker:
 	@docker build -t terrable .
