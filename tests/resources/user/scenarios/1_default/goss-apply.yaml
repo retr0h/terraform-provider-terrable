@@ -1,0 +1,6 @@
+---
+user:
+  tomcat:
+    exists: true
+    home: /home/tomcat
+    shell: /bin/bash

@@ -1,5 +1,5 @@
 // Copyright (c) 2021 John Dewey <john@dewey.ws>
-
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
@@ -18,15 +18,31 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-package main
+package terrable
 
 import (
-	"github.com/hashicorp/terraform-plugin-sdk/v2/plugin"
-	"github.com/retr0h/terraform-provider-terrable/pkg/terrable"
+	"testing"
+
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
-func main() {
-	plugin.Serve(&plugin.ServeOpts{
-		ProviderFunc: terrable.Provider,
-	})
+var testAccProviders map[string]*schema.Provider
+var testAccProvider *schema.Provider
+
+func init() {
+	testAccProvider = Provider()
+	testAccProviders = map[string]*schema.Provider{
+		"terrable": testAccProvider,
+	}
+}
+
+func TestProvider(t *testing.T) {
+	if err := Provider().InternalValidate(); err != nil {
+		t.Fatalf("err: %s", err)
+	}
+}
+
+// testAccPreCheck validates the necessary test API keys exist
+// in the testing environment
+func testAccPreCheck(t *testing.T) {
 }

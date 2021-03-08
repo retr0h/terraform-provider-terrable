@@ -14,3 +14,13 @@ jobs:
       - uses: actions/checkout@v2
       - name: Super-Linter
         uses: github/super-linter@v3.14.0
+        env:
+          DEFAULT_BRANCH: main
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VALIDATE_ALL_CODEBASE: false
+          VALIDATE_YAML: true
+          VALIDATE_GO: true
+          VALIDATE_MARKDOWN: true
+          # VALIDATE_DOCKERFILE: false
+          # VALIDATE_DOCKERFILE_HADOLINT: false
+          # VALIDATE_BASH: false

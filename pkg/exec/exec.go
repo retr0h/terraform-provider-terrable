@@ -27,14 +27,23 @@ import (
 	log "github.com/retr0h/terraform-provider-terrable/pkg/logging"
 )
 
-type Commander struct{}
-
 type CommanderDelegate interface {
 	Run(string, ...string) ([]byte, error)
+	About() []string
+}
+
+type Commander struct {
+	command []string
+}
+
+func (c *Commander) About() []string {
+	return c.command
 }
 
 func (c *Commander) Run(name string, args ...string) ([]byte, error) {
 	cmd := exec.Command(name, args...)
+	///
+	c.command = cmd.Args
 	out, err := cmd.CombinedOutput()
 
 	if err != nil {
@@ -46,4 +55,13 @@ func (c *Commander) Run(name string, args ...string) ([]byte, error) {
 	}
 
 	return out, nil
+}
+
+// Command returns the Cmd struct to execute the named program with
+// the given arguments.
+//
+// Wrapping os.exec.Command to keep imports tidy in callers.
+//
+func Command(name string, arg ...string) *exec.Cmd {
+	return exec.Command(name, arg...)
 }

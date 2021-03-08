@@ -21,10 +21,19 @@
 package terrable
 
 import (
+	"fmt"
+	"regexp"
+
+	"github.com/retr0h/terraform-provider-terrable/pkg/exec"
 	log "github.com/retr0h/terraform-provider-terrable/pkg/logging"
 	"github.com/retr0h/terraform-provider-terrable/pkg/user"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+)
+
+const (
+	LinuxUserNameMinLength = 1
+	LinuxUserNameMaxLength = 32
 )
 
 func resourceUser() *schema.Resource {
@@ -45,11 +54,11 @@ func resourceUser() *schema.Resource {
 
 		Schema: map[string]*schema.Schema{
 			"name": {
-				Type:        schema.TypeString,
-				Description: "The name of the user, also acts as it's unique ID",
-				Required:    true,
-				ForceNew:    true,
-				// ValidateFunc: validateName,
+				Type:         schema.TypeString,
+				Description:  "The name of the user, also acts as it's unique ID",
+				Required:     true,
+				ForceNew:     true,
+				ValidateFunc: validateName,
 			},
 			"shell": {
 				Type:        schema.TypeString,
@@ -57,34 +66,56 @@ func resourceUser() *schema.Resource {
 				ForceNew:    true,
 				Description: "Login shell of the new account",
 			},
-			// "servers_running": {
-			//     Type:        schema.TypeString,
-			//     Computed:    true,
-			//     Description: "Number of running servers",
-			// },
+			"directory": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				ForceNew:    true,
+				Description: "Home directory of the new account",
+			},
 		},
 	}
 }
 
-// func validateName(val interface{}, key string) (warns []string, errs []error) {
-//     name := val.(string)
+// validateName validates a username against rules defined by Debians's
+// USERADD(8).  If the validation fails the returned error is of type Error.
+//
+// It is usually recommended to only use usernames that begin with a lower case
+// letter or an underscore, followed by lower case letters, digits, underscores,
+// or dashes. They can end with a dollar sign.
+//   In regular expression terms: [a-z_][a-z0-9_-]*[$]?
+//
+// On Debian, the only constraints are that usernames must neither start with a
+// dash ('-') nor contain a colon (':') or a whitespace (space: '', end of line:
+// '\n', tabulation: '	', etc.).  Note that using a slash ('/') may break the
+// default algorithm for the definition of the user's home directory.
+//
+// Usernames may only be up to 32 characters long.
+func validateName(val interface{}, key string) (warns []string, errs []error) {
+	name := val.(string)
+	regex := fmt.Sprintf("^[a-z][a-z0-9_-]{%d,%d}$",
+		(LinuxUserNameMinLength - 1), // The regexp enforces at least one character.
+		(LinuxUserNameMaxLength - 1))
 
-//     if err := cluster.CheckName(name); err != nil {
-//         errs = append(errs, fmt.Errorf("%s", err))
-//     }
+	match, _ := regexp.MatchString(regex, name)
+	if !match {
+		errs = append(errs, fmt.Errorf("Username invalid, must match: '%s'", regex))
+	}
 
-//     return
-// }
+	return
+}
 
 func resourceUserCreate(d *schema.ResourceData, meta interface{}) error {
+	name := d.Get("name").(string)
+
 	log.Info().
-		Msg("Something in create")
+		Str("name", name).
+		Str("func", "resourceUserCreate").
+		Msg("Terrable")
 
 	if err := createUser(d); err != nil {
 		return err
 	}
 
-	name := d.Get("name").(string)
 	d.SetId(name)
 
 	return resourceUserRead(d, meta)
@@ -95,7 +126,8 @@ func resourceUserRead(d *schema.ResourceData, meta interface{}) error {
 
 	log.Info().
 		Str("name", name).
-		Msg("Something in user read fucked")
+		Str("func", "resourceUserRead").
+		Msg("Terrable")
 
 	_, err := user.Lookup(name)
 	if err != nil {
@@ -115,7 +147,8 @@ func resourceUserUpdate(d *schema.ResourceData, meta interface{}) error {
 
 func resourceUserDelete(d *schema.ResourceData, meta interface{}) error {
 	log.Info().
-		Msg("Something in delete")
+		Str("func", "resourceUserDelete").
+		Msg("Terrable")
 
 	if err := deleteUser(d); err != nil {
 		return err
@@ -129,10 +162,21 @@ func resourceUserDelete(d *schema.ResourceData, meta interface{}) error {
 func deleteUser(d *schema.ResourceData) error {
 	id := d.Id()
 
-	if err := user.Delete(id); err != nil {
+	log.Info().
+		Str("id", id).
+		Str("func", "deleteUser").
+		Msg("Terrable")
+
+	commander := &exec.Commander{}
+	u := user.User{
+		Name: id,
+	}
+
+	if err := u.Delete(commander); err != nil {
 		log.Error().
+			Str("func", "deleteUser").
 			Err(err).
-			Msg("Something in delete user fucked up")
+			Msg("Terrable")
 		return err
 	}
 
@@ -142,35 +186,27 @@ func deleteUser(d *schema.ResourceData) error {
 func createUser(d *schema.ResourceData) error {
 	name := d.Get("name").(string)
 	shell := d.Get("shell").(string)
+	directory := d.Get("directory").(string)
 
 	log.Info().
-		Msg("Something in createUser")
+		Str("name", name).
+		Str("func", "createUser").
+		Msg("Terrable")
 
-	if err := user.Add(name, "foo", shell); err != nil {
+	commander := &exec.Commander{}
+	u := user.User{
+		Name:      name,
+		Shell:     shell,
+		Directory: directory,
+	}
+
+	if err := u.Add(commander); err != nil {
 		log.Error().
+			Str("func", "createUser").
 			Err(err).
-			Msg("Something in create user fucked up")
+			Msg("Terrable")
 		return err
 	}
 
 	return nil
-}
-
-func listUser(d *schema.ResourceData) ([]byte, error) {
-	// id := d.Id()
-
-	// log.Info().
-	//     Str("id", id).
-	//     Msg("List User")
-
-	// args := []string{"cluster", "list", id, "--no-headers"}
-	// cmd := exec.Command("k3d", args...)
-	// out, err := cmd.CombinedOutput()
-
-	// if err != nil {
-	//     return out, fmt.Errorf("Reading cluster: '%s'\n\n%s", id, string(out))
-	// }
-
-	// return out, nil
-	return []byte(""), nil
 }

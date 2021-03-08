@@ -1,8 +1,9 @@
+# Terrable
+
 [![Go](https://github.com/retr0h/terraform-provider-terrable/actions/workflows/go.yml/badge.svg)](https://github.com/retr0h/terraform-provider-terrable/actions/workflows/go.yml)
 [![Docker Image CI](https://github.com/retr0h/terraform-provider-terrable/actions/workflows/docker-image.yml/badge.svg)](https://github.com/retr0h/terraform-provider-terrable/actions/workflows/docker-image.yml)
 [![Linter](https://github.com/retr0h/terraform-provider-terrable/actions/workflows/linter.yml/badge.svg)](https://github.com/retr0h/terraform-provider-terrable/actions/workflows/linter.yml)
-
-# Terrable
+[![codecov](https://codecov.io/gh/retr0h/terraform-provider-terrable/branch/main/graph/badge.svg?token=69E6QZNRVX)](https://codecov.io/gh/retr0h/terraform-provider-terrable)
 
 Terrable ~ Terraform ~ Ansible
 
@@ -44,8 +45,6 @@ resource "terrable_user" "tomcat" {
 ```
 
 ## Testing
-
-	$ make build && make install && (cd examples; terraform init ; TF_LOG=DEBUG terraform apply -auto-approve) 2>&1 | grep Something
 
 Run unit tests
 

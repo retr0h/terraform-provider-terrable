@@ -24,9 +24,14 @@ install: build
 test:
 	@go test -v -cover ./...
 
+.PHONY: cov
+cov:
+	@go test -v  -coverprofile=coverage.txt -covermode=atomic ./...
+
 .PHONY: test-integration
 test-integration:
 	@docker run -i \
+	  -e TF_LOG=$(TF_LOG) \
 		-v $(PWD):$(PWD) \
 		-w $(PWD)/tests terrable:latest ./run.sh
 

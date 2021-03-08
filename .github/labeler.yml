@@ -1,9 +1,8 @@
 ---
-
 repo:
   - ./*
 
-kind/terraform
+kind/terraform:
   - pkg/**/*.go
   - **/*.hcl
 

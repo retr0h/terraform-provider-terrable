@@ -1,0 +1,19 @@
+---
+name: Coverage
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: Generate coverage
+        run: make cov
+      - name: Upload coverage
+        uses: codecov/codecov-action@v1
+        with:
+          files: ./coverage.txt
+          fail_ci_if_error: true

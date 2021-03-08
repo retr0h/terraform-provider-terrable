@@ -21,17 +21,21 @@
 package user
 
 import (
+	"fmt"
 	"os/user"
 
 	"github.com/retr0h/terraform-provider-terrable/pkg/exec"
+)
+
+const (
+	LinuxUserAddCommand    = "/usr/sbin/useradd"
+	LinuxUserDeleteCommand = "/usr/sbin/userdel"
 )
 
 type User struct {
 	Name      string
 	Directory string
 	Shell     string
-	// Commander is swapped for tests.
-	Commander exec.CommanderDelegate
 }
 
 // Lookup looks up a user by username. If the user cannot be found,
@@ -47,45 +51,39 @@ func Lookup(userName string) (*user.User, error) {
 
 // Add a user. If the user cannot be added the returned error is of
 // type *exec.ExitError.
-func (u User) Add() error {
-	cmd := "useradd"
+func (u User) Add(i interface{}) error {
+	exec := i.(exec.CommanderDelegate)
+	directory := u.Directory
+
+	cmd := LinuxUserAddCommand
 	cmdArgs := []string{
-		"-d", u.Directory,
 		"-s", u.Shell,
-		"-m",   // create home
+		"-m", // create home
+	}
+
+	if directory != "" {
+		cmdArgs = append(cmdArgs, "-d", directory)
+	} else {
+		directory = fmt.Sprintf("/home/%s", u.Name)
+		cmdArgs = append(cmdArgs, "-d", directory)
+	}
+	cmdArgs = append(cmdArgs, u.Name)
+
+	_, err := exec.Run(cmd, cmdArgs...)
+
+	return err
+}
+
+// Delete a user. If the user cannot be deleted the returned error is of
+// type *exec.ExitError.
+func (u User) Delete(i interface{}) error {
+	exec := i.(exec.CommanderDelegate)
+	cmd := LinuxUserDeleteCommand
+	cmdArgs := []string{
 		u.Name, // account
 	}
 
-	_, err := u.Commander.Run(cmd, cmdArgs...)
-
-	return err
-}
-
-func Add(userName string, directory string, shell string) error {
-	cmd := "/usr/sbin/useradd"
-	cmdArgs := []string{
-		//"-d", directory,
-		"-s", shell,
-		"-m",     // create home
-		userName, // account
-	}
-
-	c := exec.Commander{}
-
-	_, err := c.Run(cmd, cmdArgs...)
-
-	return err
-}
-
-func Delete(userName string) error {
-	cmd := "/usr/sbin/userdel"
-	cmdArgs := []string{
-		userName, // account
-	}
-
-	c := exec.Commander{}
-
-	_, err := c.Run(cmd, cmdArgs...)
+	_, err := exec.Run(cmd, cmdArgs...)
 
 	return err
 }

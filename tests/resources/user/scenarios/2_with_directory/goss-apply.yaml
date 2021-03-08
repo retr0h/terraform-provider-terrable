@@ -1,6 +1,6 @@
 ---
 user:
-  tomcat_user:
+  tomcat:
     exists: true
-    home: /home/tomcat_user
+    home: /usr/local/tomcat
     shell: /bin/bash
