@@ -46,8 +46,8 @@ provider "terrable" {}
 resource "terrable_user" "tomcat" {
     name  = "tomcat"
     shell = "/bin/zsh"
-	directory = "/home/tomcat"
-	groups = ["sudo"]
+    directory = "/home/tomcat"
+    groups = ["sudo"]
 }
 ```
 
