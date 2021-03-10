@@ -32,24 +32,11 @@ with our specific use cases.
 
 ## Usage
 
+[Resources](docs/resources.md)
+
+### Screenshot
+
 ![Usage](img/demo.png?raw=true "Usage")
-
-### Resources
-
-#### System
-
-##### User
-
-```hcl
-provider "terrable" {}
-
-resource "terrable_user" "tomcat" {
-    name  = "tomcat"
-    shell = "/bin/zsh"
-    directory = "/home/tomcat"
-    groups = ["sudo"]
-}
-```
 
 ## Testing
 
