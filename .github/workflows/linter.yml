@@ -19,7 +19,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VALIDATE_ALL_CODEBASE: false
           VALIDATE_YAML: true
-          VALIDATE_GO: true
+          # superlinter sucks for golang
+          # VALIDATE_GO: true
           VALIDATE_MARKDOWN: true
           # VALIDATE_DOCKERFILE: false
           # VALIDATE_DOCKERFILE_HADOLINT: false
