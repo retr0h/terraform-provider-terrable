@@ -4,15 +4,15 @@ repo:
 
 kind/terraform:
   - pkg/**/*.go
-  - **/*.hcl
+  - "**/*.tf"
 
 kind/test:
-  - **/*_test.go
+  - "**/*_test.go"
   - tests/*
   - tests/*/**
 
 kind/hcl:
-  - **/*.hcl
+  - "**/*.tf"
 
 kind/yaml:
-  - **/*.yaml
+  - "**/*.yaml"

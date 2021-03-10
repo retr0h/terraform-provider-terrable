@@ -23,6 +23,7 @@ package user
 import (
 	"fmt"
 	"os/user"
+	"strings"
 
 	"github.com/retr0h/terraform-provider-terrable/pkg/exec"
 )
@@ -36,6 +37,7 @@ type User struct {
 	Name      string
 	Directory string
 	Shell     string
+	Groups    []string
 }
 
 // Lookup looks up a user by username. If the user cannot be found,
@@ -49,11 +51,12 @@ func Lookup(userName string) (*user.User, error) {
 	return u, nil
 }
 
-// Add a user. If the user cannot be added the returned error is of
-// type *exec.ExitError.
+// Add a user. If the user cannot be added the returned error contains
+// the stderr of the command executed.
 func (u User) Add(i interface{}) error {
 	exec := i.(exec.CommanderDelegate)
 	directory := u.Directory
+	groups := u.Groups
 
 	cmd := LinuxUserAddCommand
 	cmdArgs := []string{
@@ -67,15 +70,24 @@ func (u User) Add(i interface{}) error {
 		directory = fmt.Sprintf("/home/%s", u.Name)
 		cmdArgs = append(cmdArgs, "-d", directory)
 	}
+
+	if len(groups) > 0 {
+		joinedGroups := strings.Join(groups, ",")
+		cmdArgs = append(cmdArgs, "-G", joinedGroups)
+	}
+
 	cmdArgs = append(cmdArgs, u.Name)
 
-	_, err := exec.Run(cmd, cmdArgs...)
+	out, err := exec.Run(cmd, cmdArgs...)
+	if err != nil {
+		return fmt.Errorf("%w\n\nOut:\n%s", err, out)
+	}
 
-	return err
+	return nil
 }
 
-// Delete a user. If the user cannot be deleted the returned error is of
-// type *exec.ExitError.
+// Delete a user. If the user cannot be deleted the error contains
+// the stderr of the command executed.
 func (u User) Delete(i interface{}) error {
 	exec := i.(exec.CommanderDelegate)
 	cmd := LinuxUserDeleteCommand
@@ -83,7 +95,10 @@ func (u User) Delete(i interface{}) error {
 		u.Name, // account
 	}
 
-	_, err := exec.Run(cmd, cmdArgs...)
+	out, err := exec.Run(cmd, cmdArgs...)
+	if err != nil {
+		return fmt.Errorf("%w\n\nOut:\n%s", err, out)
+	}
 
-	return err
+	return nil
 }

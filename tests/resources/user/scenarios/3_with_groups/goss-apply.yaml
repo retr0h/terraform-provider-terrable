@@ -1,0 +1,9 @@
+---
+user:
+  tomcat:
+    exists: true
+    home: /usr/local/tomcat
+    shell: /bin/bash
+    groups:
+      - foo
+      - bar
