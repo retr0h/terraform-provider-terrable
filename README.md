@@ -34,13 +34,20 @@ with our specific use cases.
 
 ![Usage](img/demo.png?raw=true "Usage")
 
+### Resources
+
+#### System
+
+##### User
+
 ```hcl
-# The "local" system provider to manage local resources
 provider "terrable" {}
 
 resource "terrable_user" "tomcat" {
     name  = "tomcat"
     shell = "/bin/zsh"
+	directory = "/home/tomcat"
+	groups = ["sudo"]
 }
 ```
 

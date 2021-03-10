@@ -72,6 +72,15 @@ func resourceUser() *schema.Resource {
 				ForceNew:    true,
 				Description: "Home directory of the new account",
 			},
+			"groups": {
+				Type:        schema.TypeList,
+				Optional:    true,
+				ForceNew:    true,
+				Description: "List of supplementary groups of the new account",
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				},
+			},
 		},
 	}
 }
@@ -187,6 +196,12 @@ func createUser(d *schema.ResourceData) error {
 	name := d.Get("name").(string)
 	shell := d.Get("shell").(string)
 	directory := d.Get("directory").(string)
+	inputGroups := d.Get("groups").([]interface{})
+
+	groups := make([]string, len(inputGroups))
+	for i, v := range inputGroups {
+		groups[i] = fmt.Sprint(v)
+	}
 
 	log.Info().
 		Str("name", name).
@@ -198,6 +213,7 @@ func createUser(d *schema.ResourceData) error {
 		Name:      name,
 		Shell:     shell,
 		Directory: directory,
+		Groups:    groups,
 	}
 
 	if err := u.Add(commander); err != nil {

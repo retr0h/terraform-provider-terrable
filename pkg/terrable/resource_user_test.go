@@ -113,7 +113,6 @@ func TestValidateName(t *testing.T) {
 	for i, tc := range cases {
 		t.Run(fmt.Sprintf("%d-%s", i, tc.Name), func(t *testing.T) {
 			_, err := validateName(tc.Name, "name")
-			fmt.Println(err)
 
 			if tc.Err == false {
 				assert.Empty(t, err)

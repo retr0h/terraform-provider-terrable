@@ -92,19 +92,24 @@ func TestAdd(t *testing.T) {
 				Name:      "fake-name",
 				Directory: "fake-dir",
 				Shell:     "fake-shell",
+				Groups: []string{
+					"foo",
+					"bar",
+				},
 			},
 			Want: []string{
 				"/usr/sbin/useradd",
 				"-s", "fake-shell",
 				"-m",
 				"-d", "fake-dir",
+				"-G", "foo,bar",
 				"fake-name",
 			},
 			Err:       false,
 			Commander: fc,
 		},
 		{
-			Name: "Without directory field",
+			Name: "Without optional fields",
 			User: &User{
 				Name:  "fake-name",
 				Shell: "fake-shell",

@@ -47,3 +47,9 @@ mod:
 .PHONY: build-docker
 build-docker:
 	@docker build -t terrable .
+
+.PHONY: docker-exec
+docker-exec:
+	@docker run -it \
+		-v $(PWD):$(PWD) \
+		-w $(PWD)/tests terrable:latest bash
