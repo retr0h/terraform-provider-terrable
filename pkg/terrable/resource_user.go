@@ -26,7 +26,7 @@ import (
 
 	"github.com/retr0h/terraform-provider-terrable/pkg/exec"
 	log "github.com/retr0h/terraform-provider-terrable/pkg/logging"
-	"github.com/retr0h/terraform-provider-terrable/pkg/user"
+	"github.com/retr0h/terraform-provider-terrable/pkg/system/user"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
