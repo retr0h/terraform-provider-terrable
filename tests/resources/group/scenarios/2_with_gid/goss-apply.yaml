@@ -1,0 +1,5 @@
+---
+group:
+  test_group:
+    exists: true
+    gid: 2000

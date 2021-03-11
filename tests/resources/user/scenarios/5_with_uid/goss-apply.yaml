@@ -1,7 +1,7 @@
 ---
 user:
-  tomcat:
+  test_user:
     exists: true
     shell: /bin/bash
     uid: 1099
-    # TODO(retr0h): Test gid once `terrable_group` written
+    gid: 2000

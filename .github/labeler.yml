@@ -1,18 +1,19 @@
 ---
-repo:
-  - ./*
-
-kind/terraform:
-  - pkg/**/*.go
-  - "**/*.tf"
-
-kind/test:
+test/unit:
   - "**/*_test.go"
+
+test/integration:
   - tests/*
   - tests/*/**
 
-kind/hcl:
-  - "**/*.tf"
-
 kind/yaml:
   - "**/*.yaml"
+
+kind/pkg:
+  - pkg/**/*
+
+terraform/provider:
+  - "pkg/terrable/provider*"
+
+terraform/hcl:
+  - "**/*.tf"

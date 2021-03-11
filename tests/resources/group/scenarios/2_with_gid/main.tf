@@ -10,8 +10,7 @@ terraform {
 
 provider "terrable" {}
 
-resource "terrable_user" "test_user" {
-  name      = "test_user"
-  shell     = "/bin/bash"
-  directory = "/usr/local/test_user"
+resource "terrable_group" "test_group" {
+  name = "test_group"
+  gid = "2000"
 }

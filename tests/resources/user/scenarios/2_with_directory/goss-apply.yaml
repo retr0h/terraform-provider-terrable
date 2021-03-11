@@ -1,6 +1,6 @@
 ---
 user:
-  tomcat:
+  test_user:
     exists: true
-    home: /usr/local/tomcat
+    home: /usr/local/test_user
     shell: /bin/bash
