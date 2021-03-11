@@ -81,6 +81,12 @@ func resourceUser() *schema.Resource {
 					Type: schema.TypeString,
 				},
 			},
+			"system": {
+				Type:        schema.TypeBool,
+				Optional:    true,
+				ForceNew:    true,
+				Description: "Create a system account",
+			},
 		},
 	}
 }
@@ -197,6 +203,7 @@ func createUser(d *schema.ResourceData) error {
 	shell := d.Get("shell").(string)
 	directory := d.Get("directory").(string)
 	inputGroups := d.Get("groups").([]interface{})
+	system := d.Get("system").(bool)
 
 	groups := make([]string, len(inputGroups))
 	for i, v := range inputGroups {
@@ -214,6 +221,7 @@ func createUser(d *schema.ResourceData) error {
 		Shell:     shell,
 		Directory: directory,
 		Groups:    groups,
+		System:    system,
 	}
 
 	if err := u.Add(commander); err != nil {
