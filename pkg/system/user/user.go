@@ -38,6 +38,7 @@ type User struct {
 	Directory string
 	Shell     string
 	Groups    []string
+	System    bool
 }
 
 // Lookup looks up a user by username. If the user cannot be found,
@@ -57,6 +58,7 @@ func (u User) Add(i interface{}) error {
 	exec := i.(exec.CommanderDelegate)
 	directory := u.Directory
 	groups := u.Groups
+	system := u.System
 
 	cmd := LinuxUserAddCommand
 	cmdArgs := []string{
@@ -74,6 +76,10 @@ func (u User) Add(i interface{}) error {
 	if len(groups) > 0 {
 		joinedGroups := strings.Join(groups, ",")
 		cmdArgs = append(cmdArgs, "-G", joinedGroups)
+	}
+
+	if system {
+		cmdArgs = append(cmdArgs, "-r")
 	}
 
 	cmdArgs = append(cmdArgs, u.Name)

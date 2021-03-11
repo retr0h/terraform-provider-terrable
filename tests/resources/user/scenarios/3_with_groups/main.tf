@@ -23,7 +23,6 @@ resource "terrable_user" "bar" {
 resource "terrable_user" "tomcat" {
   name      = "tomcat"
   shell     = "/bin/bash"
-  directory = "/usr/local/tomcat"
   groups    = ["foo", "bar"]
 
   depends_on = [terrable_user.foo, terrable_user.bar]

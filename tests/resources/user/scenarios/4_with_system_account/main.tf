@@ -11,6 +11,7 @@ terraform {
 provider "terrable" {}
 
 resource "terrable_user" "tomcat" {
-  name  = "tomcat"
-  shell = "/bin/bash"
+  name      = "tomcat"
+  shell     = "/bin/bash"
+  system    = true
 }

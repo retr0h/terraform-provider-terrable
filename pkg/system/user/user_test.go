@@ -87,7 +87,7 @@ func TestAdd(t *testing.T) {
 		Commander exec.CommanderDelegate
 	}{
 		{
-			Name: "Default",
+			Name: "All",
 			User: &User{
 				Name:      "fake-name",
 				Directory: "fake-dir",
@@ -96,6 +96,7 @@ func TestAdd(t *testing.T) {
 					"foo",
 					"bar",
 				},
+				System: true,
 			},
 			Want: []string{
 				"/usr/sbin/useradd",
@@ -103,6 +104,7 @@ func TestAdd(t *testing.T) {
 				"-m",
 				"-d", "fake-dir",
 				"-G", "foo,bar",
+				"-r",
 				"fake-name",
 			},
 			Err:       false,
