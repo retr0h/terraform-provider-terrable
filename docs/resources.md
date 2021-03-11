@@ -2,6 +2,7 @@
 * [Resources](#resources)
     * [System](#system)
         * [User](#user)
+        * [Group](#group)
 <!--te-->
 
 # Resources
