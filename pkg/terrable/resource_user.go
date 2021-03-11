@@ -87,6 +87,18 @@ func resourceUser() *schema.Resource {
 				ForceNew:    true,
 				Description: "Create a system account",
 			},
+			"uid": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				ForceNew:    true,
+				Description: "User ID of the new account",
+			},
+			"gid": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				ForceNew:    true,
+				Description: "Name or ID of the primary group of the new account",
+			},
 		},
 	}
 }
@@ -204,6 +216,8 @@ func createUser(d *schema.ResourceData) error {
 	directory := d.Get("directory").(string)
 	inputGroups := d.Get("groups").([]interface{})
 	system := d.Get("system").(bool)
+	uid := d.Get("uid").(string)
+	gid := d.Get("gid").(string)
 
 	groups := make([]string, len(inputGroups))
 	for i, v := range inputGroups {
@@ -222,6 +236,8 @@ func createUser(d *schema.ResourceData) error {
 		Directory: directory,
 		Groups:    groups,
 		System:    system,
+		UID:       uid,
+		GID:       gid,
 	}
 
 	if err := u.Add(commander); err != nil {

@@ -39,6 +39,8 @@ type User struct {
 	Shell     string
 	Groups    []string
 	System    bool
+	UID       string
+	GID       string
 }
 
 // Lookup looks up a user by username. If the user cannot be found,
@@ -59,6 +61,8 @@ func (u User) Add(i interface{}) error {
 	directory := u.Directory
 	groups := u.Groups
 	system := u.System
+	uid := u.UID
+	gid := u.GID
 
 	cmd := LinuxUserAddCommand
 	cmdArgs := []string{
@@ -80,6 +84,14 @@ func (u User) Add(i interface{}) error {
 
 	if system {
 		cmdArgs = append(cmdArgs, "-r")
+	}
+
+	if uid != "" {
+		cmdArgs = append(cmdArgs, "-u", uid)
+	}
+
+	if gid != "" {
+		cmdArgs = append(cmdArgs, "-g", gid)
 	}
 
 	cmdArgs = append(cmdArgs, u.Name)

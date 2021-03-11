@@ -97,6 +97,8 @@ func TestAdd(t *testing.T) {
 					"bar",
 				},
 				System: true,
+				UID:    "1099",
+				GID:    "1099",
 			},
 			Want: []string{
 				"/usr/sbin/useradd",
@@ -105,6 +107,8 @@ func TestAdd(t *testing.T) {
 				"-d", "fake-dir",
 				"-G", "foo,bar",
 				"-r",
+				"-u", "1099",
+				"-g", "1099",
 				"fake-name",
 			},
 			Err:       false,
