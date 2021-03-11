@@ -1,4 +1,4 @@
 ---
 user:
-  tomcat:
+  test_user:
     exists: false

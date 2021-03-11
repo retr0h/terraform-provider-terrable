@@ -10,10 +10,16 @@ terraform {
 
 provider "terrable" {}
 
-resource "terrable_user" "tomcat" {
-  name  = "tomcat"
+resource "terrable_group" "test_group" {
+  name = "test_group"
+  gid = "2000"
+}
+
+resource "terrable_user" "test_user" {
+  name  = "test_user"
   shell = "/bin/bash"
   uid   = "1099"
-  # TODO(retr0h): Test gid once `terrable_group` written
-  # gid = "1099"
+  gid = "2000"
+
+  depends_on = [terrable_group.test_group]
 }

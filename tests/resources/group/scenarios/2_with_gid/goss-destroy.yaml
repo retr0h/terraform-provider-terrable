@@ -1,4 +1,4 @@
 ---
-user:
-  test_user:
+group:
+  test_group:
     exists: false

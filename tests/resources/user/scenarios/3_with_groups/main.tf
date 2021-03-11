@@ -20,8 +20,8 @@ resource "terrable_user" "bar" {
   shell = "/bin/bash"
 }
 
-resource "terrable_user" "tomcat" {
-  name      = "tomcat"
+resource "terrable_user" "test_user" {
+  name      = "test_user"
   shell     = "/bin/bash"
   groups    = ["foo", "bar"]
 

@@ -1,6 +1,6 @@
 ---
 user:
-  tomcat:
+  test_user:
     exists: true
     shell: /bin/bash
     # TODO(retr0h): Test this is a system account

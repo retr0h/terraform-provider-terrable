@@ -18,25 +18,38 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-package terrable
+package exec
 
 import (
-	"time"
-
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"fmt"
+	"os/exec"
 )
 
-const (
-	defaultCreateTimeout = time.Minute * 5
-	defaultUpdateTimeout = time.Minute * 5
-	defaultDeleteTimeout = time.Minute * 5
-)
+type FakeCommander struct {
+	command []string
+}
 
-func Provider() *schema.Provider {
-	return &schema.Provider{
-		ResourcesMap: map[string]*schema.Resource{
-			"terrable_user":  resourceUser(),
-			"terrable_group": resourceGroup(),
-		},
-	}
+func (c *FakeCommander) Run(name string, args ...string) ([]byte, error) {
+	cmd := exec.Command(name, args...)
+	c.command = cmd.Args
+
+	return []byte(""), nil
+}
+
+func (fc *FakeCommander) About() []string {
+	return fc.command
+}
+
+type FakeUnsuccessfulCommander struct {
+	command []string
+}
+
+func (c *FakeUnsuccessfulCommander) Run(name string, args ...string) ([]byte, error) {
+	err := fmt.Errorf("Faked run error")
+
+	return []byte(nil), err
+}
+
+func (fuc *FakeUnsuccessfulCommander) About() []string {
+	return fuc.command
 }

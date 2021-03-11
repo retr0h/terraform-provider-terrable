@@ -17,7 +17,7 @@ for resource in $(ls resources); do
 		echo
 		(
 			cd resources/${resource}/scenarios/${scenario}
-			rm -rf ./.terraform ./.terraform.lock.hcl
+			rm -rf ./.terraform ./.terraform.lock.hcl terraform.tfstate*
 			terraform init >/dev/nullt
 
 			TF_LOG=$TF_LOG terraform apply ${TERRAFORM_FLAGS}

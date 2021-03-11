@@ -18,7 +18,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-package user
+package group
 
 import (
 	"fmt"
@@ -31,30 +31,31 @@ import (
 
 func TestLocate(t *testing.T) {
 	u, _ := user.Current()
+	g, _ := user.LookupGroupId(u.Gid)
 
 	cases := []struct {
-		Name     string
-		UserName string
-		Err      bool
+		Name      string
+		GroupName string
+		Err       bool
 	}{
 		{
-			Name:     "Existing user name",
-			UserName: u.Username,
-			Err:      false,
+			Name:      "Existing group name",
+			GroupName: g.Name,
+			Err:       false,
 		},
 		{
-			Name:     "Non-existing user name",
-			UserName: "invalid",
-			Err:      true,
+			Name:      "Non-existing group name",
+			GroupName: "invalid",
+			Err:       true,
 		},
 	}
 
 	for i, tc := range cases {
 		t.Run(fmt.Sprintf("%d-%s", i, tc.Name), func(t *testing.T) {
-			u, err := Lookup(tc.UserName)
+			u, err := Lookup(tc.GroupName)
 
 			if tc.Err == false {
-				assert.Equal(t, u.Username, tc.UserName)
+				assert.Equal(t, u.Name, tc.GroupName)
 				assert.NoError(t, err)
 			} else {
 				assert.Error(t, err)
@@ -69,60 +70,41 @@ func TestAdd(t *testing.T) {
 	fuc := &exec.FakeUnsuccessfulCommander{}
 	cases := []struct {
 		Name      string
-		User      *User
+		Group     *Group
 		Want      []string
 		Err       bool
 		Commander exec.CommanderDelegate
 	}{
 		{
 			Name: "All fields",
-			User: &User{
-				Name:      "fake-name",
-				Directory: "fake-dir",
-				Shell:     "fake-shell",
-				Groups: []string{
-					"foo",
-					"bar",
-				},
-				System: true,
-				UID:    "1099",
-				GID:    "1099",
+			Group: &Group{
+				Name: "fake-group",
+				GID:  "1099",
 			},
 			Want: []string{
-				"/usr/sbin/useradd",
-				"-s", "fake-shell",
-				"-m",
-				"-d", "fake-dir",
-				"-G", "foo,bar",
-				"-r",
-				"-u", "1099",
+				"/usr/sbin/groupadd",
 				"-g", "1099",
-				"fake-name",
+				"fake-group",
 			},
 			Err:       false,
 			Commander: fc,
 		},
 		{
 			Name: "Without optional fields",
-			User: &User{
-				Name:  "fake-name",
-				Shell: "fake-shell",
+			Group: &Group{
+				Name: "fake-group",
 			},
 			Want: []string{
-				"/usr/sbin/useradd",
-				"-s", "fake-shell",
-				"-m",
-				"-d", "/home/fake-name",
-				"fake-name",
+				"/usr/sbin/groupadd",
+				"fake-group",
 			},
 			Err:       false,
 			Commander: fc,
 		},
 		{
 			Name: "Returns an error",
-			User: &User{
-				Name:  "fake-name",
-				Shell: "fake-shell",
+			Group: &Group{
+				Name: "fake-name",
 			},
 			Want:      []string(nil),
 			Err:       true,
@@ -132,8 +114,8 @@ func TestAdd(t *testing.T) {
 
 	for i, tc := range cases {
 		t.Run(fmt.Sprintf("%d-%s", i, tc.Name), func(t *testing.T) {
-			u := tc.User
-			err := u.Add(tc.Commander)
+			g := tc.Group
+			err := g.Add(tc.Commander)
 
 			got := tc.Commander.About()
 			assert.Equal(t, tc.Want, got)
@@ -146,33 +128,32 @@ func TestAdd(t *testing.T) {
 		})
 	}
 }
-
 func TestDelete(t *testing.T) {
 	fc := &exec.FakeCommander{}
 	fuc := &exec.FakeUnsuccessfulCommander{}
 	cases := []struct {
 		Name      string
-		User      *User
+		Group     *Group
 		Want      []string
 		Err       bool
 		Commander exec.CommanderDelegate
 	}{
 		{
 			Name: "Default",
-			User: &User{
-				Name: "fake-user",
+			Group: &Group{
+				Name: "fake-group",
 			},
 			Want: []string{
-				"/usr/sbin/userdel",
-				"fake-user",
+				"/usr/sbin/groupdel",
+				"fake-group",
 			},
 			Err:       false,
 			Commander: fc,
 		},
 		{
 			Name: "Returns an error",
-			User: &User{
-				Name: "fake-name",
+			Group: &Group{
+				Name: "fake-group",
 			},
 			Want:      []string(nil),
 			Err:       true,
@@ -182,8 +163,8 @@ func TestDelete(t *testing.T) {
 
 	for i, tc := range cases {
 		t.Run(fmt.Sprintf("%d-%s", i, tc.Name), func(t *testing.T) {
-			u := tc.User
-			err := u.Delete(tc.Commander)
+			g := tc.Group
+			err := g.Delete(tc.Commander)
 
 			got := tc.Commander.About()
 			assert.Equal(t, tc.Want, got)

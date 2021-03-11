@@ -40,7 +40,6 @@ func resourceUser() *schema.Resource {
 	return &schema.Resource{
 		Create: resourceUserCreate,
 		Read:   resourceUserRead,
-		// Update: resourceUserUpdate,
 		Delete: resourceUserDelete,
 		Importer: &schema.ResourceImporter{
 			State: schema.ImportStatePassthrough,
@@ -48,7 +47,6 @@ func resourceUser() *schema.Resource {
 
 		Timeouts: &schema.ResourceTimeout{
 			Create: schema.DefaultTimeout(defaultCreateTimeout),
-			// Update: schema.DefaultTimeout(defaultUpdateTimeout),
 			Delete: schema.DefaultTimeout(defaultDeleteTimeout),
 		},
 

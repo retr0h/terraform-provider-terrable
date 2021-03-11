@@ -1,0 +1,4 @@
+---
+group:
+  test_group:
+    exists: true
