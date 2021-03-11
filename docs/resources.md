@@ -1,13 +1,52 @@
 <!--ts-->
 * [Resources](#resources)
+    * [File](#file)
+        * [template](#template)
     * [System](#system)
-        * [User](#user)
-        * [Group](#group)
+        * [group](#group)
+        * [user](#user)
 <!--te-->
 
 # Resources
 
+## File
+
+### template
+
+Rather than building our own implementation, use Terraform's
+[templatefile function][].
+
+[templatefile function]: https://www.terraform.io/docs/language/functions/templatefile.html
+
+```hcl
+locals {
+  content = templatefile("${path.module}/policy.tpl", {
+    name = "foo"
+  })
+}
+
+resource "local_file" "policy" {
+  content  = local.content
+  filename = "${path.module}/policy.ini"
+}
+```
+
 ## System
+
+### Group
+
+```hcl
+provider "terrable" {}
+
+resource "terrable_group" "sudo" {
+  name  = "sudo"
+}
+```
+
+#### Arguments
+
+* `name` - The name of the group (string)
+* `gid` (Optional) - Use GID for the new group (string)
 
 ### User
 
@@ -15,8 +54,8 @@
 provider "terrable" {}
 
 resource "terrable_user" "tomcat" {
-    name  = "tomcat"
-    shell = "/bin/zsh"
+  name  = "tomcat"
+  shell = "/bin/zsh"
 }
 ```
 
@@ -29,18 +68,3 @@ resource "terrable_user" "tomcat" {
 * `system` (Optional) - Create a system account (bool)
 * `uid` (Optional) - User ID of the new account (string)
 * `gid` (Optional) - Name or ID of the primary group of the new account (string)
-
-### Group
-
-```hcl
-provider "terrable" {}
-
-resource "terrable_group" "sudo" {
-    name  = "sudo"
-}
-```
-
-#### Arguments
-
-* `name` - The name of the group (string)
-* `gid` (Optional) - Use GID for the new group (string)
