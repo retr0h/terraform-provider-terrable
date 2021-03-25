@@ -5,7 +5,7 @@ go 1.15
 require (
 	github.com/go-test/deep v1.0.4 // indirect
 	github.com/golang/protobuf v1.4.3 // indirect
-	github.com/hashicorp/terraform-plugin-sdk/v2 v2.4.4
+	github.com/hashicorp/terraform-plugin-sdk/v2 v2.5.0
 	github.com/mitchellh/mapstructure v1.3.3 // indirect
 	github.com/rs/zerolog v1.21.0
 	github.com/stretchr/testify v1.7.0
