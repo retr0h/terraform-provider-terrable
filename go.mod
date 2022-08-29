@@ -7,8 +7,9 @@ require (
 	github.com/golang/protobuf v1.4.3 // indirect
 	github.com/hashicorp/terraform-plugin-sdk/v2 v2.6.0
 	github.com/mitchellh/mapstructure v1.3.3 // indirect
-	github.com/rs/zerolog v1.21.0
+	github.com/rs/zerolog v1.28.0
 	github.com/stretchr/testify v1.7.0
+	golang.org/x/tools v0.1.0 // indirect
 	google.golang.org/genproto v0.0.0-20201103154000-415bd0cd5df6 // indirect
 	google.golang.org/grpc v1.33.1 // indirect
 	gopkg.in/yaml.v2 v2.3.0 // indirect
